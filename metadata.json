@@ -1,0 +1,8 @@
+{
+  "name": "Remix CalmFlow AI",
+  "description": "AI-powered client communication and escalation-prevention platform for business and shared-service operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
