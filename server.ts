@@ -1,5 +1,5 @@
 import 'dotenv/config';
-console.log('DEBUG - Key loaded:', process.env.GEMINI_API_KEY ? 'YES, starts with: ' + process.env.GEMINI_API_KEY.slice(0, 6) : 'NO - undefined');
+import { saveCase, getAllCases } from './db';
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
@@ -241,6 +241,20 @@ Return valid JSON with these keys: sentiment, intent, urgency, riskPercentage, r
       },
       source: 'calmflow-heuristics-engine'
     });
+  });
+
+  app.get('/api/cases', (_req, res) => {
+    const cases = getAllCases();
+    res.json({ success: true, cases });
+  });
+
+  app.post('/api/cases', (req, res) => {
+    const caseData = req.body;
+    if (!caseData.id) {
+      return res.status(400).json({ success: false, error: 'Case must have an id' });
+    }
+    saveCase(caseData.id, caseData);
+    res.json({ success: true });
   });
 
   // API Route: Multi-Agent Consensus Deliberation
