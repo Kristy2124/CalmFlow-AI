@@ -20,4 +20,9 @@ export function getAllCases() {
   return rows.map(row => JSON.parse(row.data));
 }
 
+export function deleteCase(id: string) {
+  const stmt = db.prepare('DELETE FROM cases WHERE id = ?');
+  stmt.run(id);
+}
+
 export default db;

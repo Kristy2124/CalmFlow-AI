@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { saveCase, getAllCases } from './db';
+import { saveCase, getAllCases, deleteCase } from './db';
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
@@ -55,6 +55,11 @@ async function startServer() {
       },
       timestamp: new Date().toISOString()
     });
+  });
+
+  app.delete('/api/cases/:id', (req, res) => {
+    deleteCase(req.params.id);
+    res.json({ success: true });
   });
 
   // AI Client helper with telemetry
