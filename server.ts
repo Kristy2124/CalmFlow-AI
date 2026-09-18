@@ -1,3 +1,5 @@
+import 'dotenv/config';
+console.log('DEBUG - Key loaded:', process.env.GEMINI_API_KEY ? 'YES, starts with: ' + process.env.GEMINI_API_KEY.slice(0, 6) : 'NO - undefined');
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
