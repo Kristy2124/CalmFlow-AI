@@ -337,7 +337,7 @@ Produce a detailed deliberation JSON object with:
 Return ONLY the raw valid JSON.`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-3.8-flash',
+          model: 'gemini-2.5-flash-lite',
           contents: prompt,
           config: {
             responseMimeType: 'application/json'
