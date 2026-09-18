@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
@@ -34,8 +34,18 @@ export default function App() {
   };
 
   // Update a case (e.g. after response approved or escalated)
-  const handleUpdateCase = (updated: CaseItem) => {
+  const handleUpdateCase = async (updated: CaseItem) => {
     setCases((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+
+    try {
+      await fetch('/api/cases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch (err) {
+      console.error('Failed to save case update to backend:', err);
+    }
   };
 
   // Add custom case from simulator
@@ -91,6 +101,21 @@ export default function App() {
         c.company.toLowerCase().includes(q)
     );
   }, [cases, searchQuery]);
+
+  useEffect(() => {
+    fetch('/api/cases')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.cases.length > 0) {
+          setCases(prev => {
+            const savedIds = new Set(data.cases.map((c: CaseItem) => c.id));
+            const stillFresh = prev.filter(c => !savedIds.has(c.id));
+            return [...data.cases, ...stillFresh];
+          });
+        }
+      })
+      .catch(err => console.error('Failed to load saved cases:', err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 flex text-slate-900 font-sans antialiased relative">

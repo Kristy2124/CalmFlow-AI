@@ -81,7 +81,7 @@ export function CustomSimulatorModal({ isOpen, onClose, onAddCustomCase }: Custo
     }
   };
 
-  const handleImportToCases = () => {
+  const handleImportToCases = async () => {
     if (!analysisResult) return;
 
     const newCase: CaseItem = {
@@ -142,6 +142,17 @@ export function CustomSimulatorModal({ isOpen, onClose, onAddCustomCase }: Custo
 
     newCase.multiAgentDeliberation = generateMultiAgentDeliberation(newCase);
     newCase.mlFeatures = calculateMLFeatures(newCase);
+
+    // Save to backend database
+    try {
+      await fetch('/api/cases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCase)
+      });
+    } catch (err) {
+      console.error('Failed to save case to backend:', err);
+    }
 
     onAddCustomCase(newCase);
     onClose();
